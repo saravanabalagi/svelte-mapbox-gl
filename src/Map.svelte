@@ -1,4 +1,7 @@
 <script>
+  // import important css declarations given by mapbox-gl
+  import 'mapbox-gl/dist/mapbox-gl.css';
+
   // mapboxgl properties
   export let accessToken;
   export let baseApiUrl = undefined;
