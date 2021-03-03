@@ -1,0 +1,43 @@
+{
+  "name": "svelte-mapbox-gl",
+  "version": "0.1.8",
+  "description": "Mapbox GL components for Svelte",
+  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/saravanabalagi/svelte-mapbox-gl.git"
+  },
+  "keywords": [
+    "mapbox",
+    "svelte",
+    "components",
+    "mapboxgl"
+  ],
+  "scripts": {
+    "storybook": "node -r dotenv/config ./node_modules/.bin/start-storybook -p 6006",
+    "build-storybook": "node -r dotenv/config ./node_modules/.bin/build-storybook",
+    "lint": "eslint --ext .js,.svelte src"
+  },
+  "author": "Saravanabalagi Ramachandran",
+  "license": "MIT",
+  "homepage": "https://github.com/saravanabalagi/svelte-mapbox-gl#readme",
+  "bugs": {
+    "url": "https://github.com/saravanabalagi/svelte-mapbox-gl/issues"
+  },
+  "peerDependencies": {
+    "mapbox-gl": "^1.8.1 <2.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@storybook/svelte": "^6.0.22",
+    "@turf/random": "^6.0.2",
+    "babel-eslint": "^10.1.0",
+    "babel-loader": "^8.1.0",
+    "dotenv": "^8.2.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-svelte3": "^2.7.3",
+    "mapbox-gl": "^1.10.1",
+    "svelte": "^3.20.1",
+    "svelte-loader": "^2.13.6"
+  }
+}
