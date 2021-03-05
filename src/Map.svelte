@@ -73,6 +73,10 @@
     getLoadedStore: () => loadedStore
   });
 
+  // expose map and loaded outside
+  export const getMap = () => map;
+  export const isLoaded = () => loaded;
+
   const dispatch = createEventDispatcher();
 
   let container;

@@ -1,6 +1,6 @@
 {
   "name": "svelte-mapbox-gl",
-  "version": "0.1.9",
+  "version": "0.2.0",
   "description": "Mapbox GL components for Svelte",
   "main": "src/index.js",
   "repository": {
