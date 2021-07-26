@@ -1,6 +1,7 @@
 <script>
   // import important css declarations given by mapbox-gl
   import 'mapbox-gl/dist/mapbox-gl.css';
+  import BoxSelect from './BoxSelect.svelte';
 
   // mapboxgl properties
   export let accessToken;
@@ -16,6 +17,7 @@
   export let bearingSnap = undefined;
   export let bounds = undefined;
   export let boxZoom = undefined;
+  export let boxSelect = undefined;
   export let center = undefined;
   export let clickTolerance = undefined;
   export let collectResourceTiming = undefined;
@@ -55,11 +57,11 @@
   export let loaded = false;
   export let styleLoaded = false;
 
-  import mapboxgl, { Map } from "mapbox-gl";
-  import { onMount, createEventDispatcher, setContext } from "svelte";
-  import { writable } from "svelte/store";
-  import { mapKey } from "./context.js";
-  import { omitUndefinedValues } from "./utils.js";
+  import mapboxgl, { Map } from 'mapbox-gl';
+  import { onMount, createEventDispatcher, setContext } from 'svelte';
+  import { writable } from 'svelte/store';
+  import { mapKey } from './context.js';
+  import { omitUndefinedValues } from './utils.js';
 
   mapboxgl.accessToken = accessToken;
   if (baseApiUrl) {
@@ -70,7 +72,7 @@
 
   setContext(mapKey, {
     getMap: () => map,
-    getLoadedStore: () => loadedStore
+    getLoadedStore: () => loadedStore,
   });
 
   // expose map and loaded outside
@@ -82,6 +84,13 @@
   let container;
 
   onMount(async () => {
+    if (boxSelect) {
+      if (boxZoom) {
+        const msg = 'Cannot enable both boxZoom and boxSelect. Disabling boxZoom';
+        console.warn(msg);
+      }
+      boxZoom = false;
+    }
     const options = omitUndefinedValues({
       antialias,
       attributionControl,
@@ -89,6 +98,7 @@
       bounds,
       bearingSnap,
       boxZoom,
+      boxSelect,
       center,
       clickTolerance,
       collectResourceTiming,
@@ -123,7 +133,7 @@
       touchZoomRotate,
       trackResize,
       transformRequest,
-      zoom
+      zoom,
     });
     map = new Map(options);
 
@@ -138,46 +148,59 @@
     // Cf https://docs.mapbox.com/mapbox-gl-js/api/#map
 
     function handleClick(event) {
-      dispatch("click", event);
+      dispatch('click', event);
     }
 
     function handleData(event) {
       styleLoaded = map.isStyleLoaded();
-      dispatch("data", event);
+      dispatch('data', event);
     }
 
     function handleLoad(event) {
       loaded = true;
       $loadedStore = true;
       updateGeoState();
-      dispatch("load", event);
+      dispatch('load', event);
     }
 
     function handleMove(event) {
       updateGeoState();
-      dispatch("move", event);
+      dispatch('move', event);
     }
 
     function handleMoveEnd(event) {
       updateGeoState();
-      dispatch("moveend", event);
+      dispatch('moveend', event);
     }
 
-    map.on("click", handleClick);
-    map.on("data", handleData);
-    map.on("load", handleLoad);
-    map.on("move", handleMove);
-    map.on("moveend", handleMoveEnd);
+    const handleBoxSelectStart = (e) => dispatch('boxselectstart', e);
+    const handleBoxSelectEnd = (e) => dispatch('boxselectend', e);
+    const handleBoxSelectCancel = (e) => dispatch('boxselectcancel', e);
+
+    map.on('click', handleClick);
+    map.on('data', handleData);
+    map.on('load', handleLoad);
+    map.on('move', handleMove);
+    map.on('moveend', handleMoveEnd);
+
+    map.on('boxselectstart', handleBoxSelectStart);
+    map.on('boxselectend', handleBoxSelectEnd);
+    map.on('boxselectcancel', handleBoxSelectCancel);
 
     // TODO forward all events
     // Cf https://docs.mapbox.com/mapbox-gl-js/api/#map.event:resize
 
     return () => {
-      map.off("click", handleClick);
-      map.off("data", handleData);
-      map.off("load", handleLoad);
-      map.off("move", handleMove);
-      map.off("moveend", handleMoveEnd);
+      map.off('click', handleClick);
+      map.off('data', handleData);
+      map.off('load', handleLoad);
+      map.off('move', handleMove);
+      map.off('moveend', handleMoveEnd);
+
+      map.off('boxselectstart', handleBoxSelectStart);
+      map.off('boxselectend', handleBoxSelectEnd);
+      map.off('boxselectcancel', handleBoxSelectCancel);
+
       map.remove();
     };
   });
@@ -185,17 +208,20 @@
   $: if (map) {
     map.setStyle(style);
   }
-</script>
+  </script>
 
-<style>
+  <div bind:this={container}>
+    {#if map}
+      {#if boxSelect}
+        <BoxSelect />
+      {/if}
+      <slot />
+    {/if}
+  </div>
+
+  <style>
   div {
     width: 100%;
     height: 100%;
   }
-</style>
-
-<div bind:this={container}>
-  {#if map}
-    <slot />
-  {/if}
-</div>
+  </style>

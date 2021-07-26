@@ -2,7 +2,7 @@
 
 Svelte 3 components for Mapbox GL.
 
-Forked from [Jailbreak's Gitlab Repo](https://gitlab.com/jailbreak/svelte-mapbox-gl). This fork will add bug fixes and TODO: deck.gl Mapbox Layer integration.
+This work is built on top of [Jailbreak's Gitlab Repo](https://gitlab.com/jailbreak/svelte-mapbox-gl). This fork will add bug fixes and further add functionality useful for working with maps. It is notable that deck.gl Mapbox Layer integration is fully possible.
 
 [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js) is a JavaScript library that uses WebGL to render interactive maps from vector tiles and Mapbox styles.
 
